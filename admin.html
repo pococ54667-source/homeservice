@@ -74,10 +74,10 @@
   const SUPABASE_URL = "https://hjpvadozhrdjugfrcffv.supabase.co";
   const SUPABASE_KEY = "sb_publishable_VWRFCLxoBE75MYve7W5jhw_PedtT83O";
 
-  const supabase = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+  const supabase = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
   async function login() {
     const email = document.getElementById("email").value;
