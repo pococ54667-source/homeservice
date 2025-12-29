@@ -1,133 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Home Services</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8">
+<title>Home Services</title>
 
-    .container {
-      max-width: 900px;
-      margin: 30px auto;
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 8px;
-    }
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-    h1 {
-      margin-bottom: 10px;
-    }
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f2f2f2;
+}
 
-    .services {
-      color: #555;
-      margin-bottom: 20px;
-    }
+.wrapper{
+  max-width:800px;
+  margin:20px auto;
+  background:#fff;
+  padding:20px;
+  border-radius:8px;
+}
 
-    button {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-bottom: 30px;
-    }
+/* TOP */
+h1{margin-bottom:5px;}
+.services{color:#666;margin-bottom:20px;}
 
-    .provider {
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 5px;
-      margin-bottom: 15px;
-    }
+/* BOOKING */
+.booking{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
 
-    footer {
-      background: #222;
-      color: #ccc;
-      padding: 30px;
-      font-size: 14px;
-    }
+select,button{
+  padding:10px;
+  font-size:15px;
+  border-radius:5px;
+  border:1px solid #ccc;
+}
 
-    footer h3 {
-      color: #fff;
-      margin-top: 20px;
-    }
+button{
+  background:#007bff;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
 
-    footer p {
-      margin: 5px 0;
-    }
+/* PROVIDERS */
+.provider{
+  border:1px solid #ddd;
+  padding:12px;
+  border-radius:6px;
+  margin-bottom:10px;
+  background:#fafafa;
+}
 
-    .footer-links {
-      margin-top: 20px;
-    }
-  </style>
+/* FOOTER */
+footer{
+  margin-top:30px;
+  background:#222;
+  color:#ccc;
+  padding:20px;
+  font-size:14px;
+}
+footer h3{color:#fff;margin-top:15px;}
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="wrapper">
   <h1>Home Services</h1>
   <div class="services">
     Plumber | Electrician | AC Repair | Carpenter | Cleaning
   </div>
 
-  <button>Book Service</button>
+  <!-- BOOKING -->
+  <div class="booking">
+    <select id="citySelect">
+      <option value="">Select City</option>
+    </select>
 
+    <select id="serviceSelect">
+      <option value="">Select Service</option>
+    </select>
+
+    <button id="searchBtn">Book Service</button>
+  </div>
+
+  <!-- RESULT -->
+  <div id="providers"></div>
+</div>
 
 <footer>
   <h3>Customer Support</h3>
   <p>Email: support@homeservices.com</p>
   <p>Phone: +91 9939496099</p>
-  <p>Support Time: 9 AM – 6 PM (Mon–Sat)</p>
-
-  <h3>Help</h3>
-  <p>• How to book a service</p>
-  <p>• Contact service provider</p>
-  <p>• Report incorrect information</p>
 
   <h3>About Us</h3>
   <p>
-    Home Services is an independent service listing platform that helps users
-    find local home service providers across India. We act only as a connecting
-    medium between customers and service professionals.
+    Home Services connects customers with local service providers.
+    We are only a listing platform.
   </p>
 
-  <h3>Terms & Conditions</h3>
+  <h3>Disclaimer</h3>
   <p>
-    We do not guarantee service quality, pricing, or availability.
-    All agreements are directly between the customer and the service provider.
+    We are not responsible for service quality or pricing.
   </p>
-
-  <h3>Privacy Policy</h3>
-  <p>
-    We do not sell or misuse user data. Any contact information shown
-    is collected from publicly available sources.
-  </p>
-
-  <div class="footer-links">
-    <p>
-      Disclaimer: Service provider details are collected from publicly available
-      sources. We are not responsible for service quality, pricing, or disputes.
-    </p>
-  </div>
 </footer>
+
+<script>
+/* SUPABASE */
+const supabaseClient = supabase.createClient(
+  "https://hjpvadozhrdjugfrcffv.supabase.co",
+  "sb_publishable_VWRFCLxoBE75MYve7W5jhw_PedtT83O"
+);
+
+/* LOAD CITIES */
+async function loadCities(){
+  const { data } = await supabaseClient
+    .from("providers")
+    .select("city")
+    .neq("city", null);
+
+  const cities = [...new Set(data.map(x => x.city))];
+  cities.forEach(c=>{
+    citySelect.innerHTML += `<option value="${c}">${c}</option>`;
+  });
+}
+
+/* LOAD SERVICES */
+async function loadServices(){
+  const { data } = await supabaseClient
+    .from("providers")
+    .select("service")
+    .neq("service", null);
+
+  const services = [...new Set(data.map(x => x.service))];
+  services.forEach(s=>{
+    serviceSelect.innerHTML += `<option value="${s}">${s}</option>`;
+  });
+}
+
+/* SEARCH */
+searchBtn.onclick = async () => {
+  providers.innerHTML = "Loading...";
+
+  const city = citySelect.value;
+  const service = serviceSelect.value;
+
+  const { data } = await supabaseClient
+    .from("providers")
+    .select("*")
+    .eq("city", city)
+    .eq("service", service)
+    .limit(20);
+
+  providers.innerHTML = "";
+
+  if(!data || data.length === 0){
+    providers.innerHTML = "No providers found";
+    return;
+  }
+
+  data.forEach(p=>{
+    providers.innerHTML += `
+      <div class="provider">
+        <b>${p.name}</b><br>
+        City: ${p.city}<br>
+        Service: ${p.service}<br>
+        Phone: ${p.phone || "N/A"}
+      </div>
+    `;
+  });
+};
+
+/* INIT */
+loadCities();
+loadServices();
+</script>
 
 </body>
 </html>
-<select id="city">
-  <option value="">Select City</option>
-</select>
-
-<select id="service">
-  <option value="">Select Service</option>
-</select>
-
-<button onclick="loadProviders()">Book Service</button>
-
-<div id="providers"></div>
-
-<script src="script.js"></script>
