@@ -1,22 +1,29 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-// Supabase credentials (provided)
-const SUPABASE_URL = "https://hjpvadozhrdjugfrcffv.supabase.co";
-const SUPABASE_KEY = "sb_publishable_VWRFCLxoBE75MYve7W5jhw_PedtT83O";
+const supabase = createClient(
+  "https://hjpvadozhrdjugfrcffv.supabase.co",
+  "sb_publishable_VWRFCLxoBE75MYve7W5jhw_PedtT83O"
+);
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const cityInput = document.getElementById("cityInput");
+const serviceInput = document.getElementById("serviceInput");
+const providersEl = document.getElementById("providers");
 
-// Helpers
-const el = (id) => document.getElementById(id);
-const providersEl = el("providers");
+document.getElementById("btnBook").addEventListener("click", loadProviders);
+document.getElementById("btnRefresh").addEventListener("click", loadProviders);
+document.getElementById("btnClear").addEventListener("click", clearFilters);
 
-// Load providers with optional filters
+function clearFilters() {
+  cityInput.value = "";
+  serviceInput.value = "";
+  providersEl.textContent = "No providers loaded";
+}
+
 async function loadProviders() {
-  const city = el("cityInput").value.trim();
-  const service = el("serviceInput").value.trim();
+  const city = cityInput.value.trim();
+  const service = serviceInput.value.trim();
 
-  providersEl.classList.remove("empty");
-  providersEl.innerHTML = `<div class="muted">Loading…</div>`;
+  providersEl.textContent = "Loading…";
 
   let query = supabase
     .from("providers")
@@ -29,43 +36,27 @@ async function loadProviders() {
   const { data, error } = await query;
 
   if (error) {
-    providersEl.classList.add("empty");
-    providersEl.textContent = "Error loading providers.";
-    console.error(error.message);
+    providersEl.textContent = "Error: " + error.message;
     return;
   }
 
   if (!data || data.length === 0) {
-    providersEl.classList.add("empty");
     providersEl.textContent = "No providers found.";
     return;
   }
 
   providersEl.innerHTML = "";
   data.forEach((row) => {
-    const card = document.createElement("div");
-    card.className = "provider";
-    card.innerHTML = `
+    const div = document.createElement("div");
+    div.className = "provider";
+    div.innerHTML = `
       <div class="name">${row.name}</div>
-      <div class="muted">Service: ${row.service} • City: ${row.city}</div>
+      <div>Service: ${row.service}</div>
+      <div>City: ${row.city}</div>
       <div>Phone: ${row.phone}</div>
-      <div class="muted">Rating: ${row.rating} ⭐ • Jobs done: ${row.jobs_done}</div>
+      <div>Rating: ${row.rating} ⭐</div>
+      <div>Jobs done: ${row.jobs_done}</div>
     `;
-    providersEl.appendChild(card);
+    providersEl.appendChild(div);
   });
-}
-
-function clearFilters() {
-  el("cityInput").value = "";
-  el("serviceInput").value = "";
-  providersEl.classList.add("empty");
-  providersEl.textContent = "No providers loaded";
-}
-
-// Button bindings
-el("btnBook").addEventListener("click", loadProviders);
-el("btnRefresh").addEventListener("click", loadProviders);
-el("btnClear").addEventListener("click", clearFilters);
-
-// Initial state
-providersEl.textContent = "No providers loaded";
+    }
