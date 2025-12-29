@@ -1,287 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Home Services Booking</title>
-  <meta name="description" content="Book local home services: plumber, electrician, carpenter and more." />
+  <meta charset="UTF-8">
+  <title>Home Services</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    :root { --bg:#f9fafb; --card:#fff; --text:#0f172a; --muted:#475569; --primary:#2563eb; --primary-100:#dbeafe; --accent:#10b981; --border:#e5e7eb; --danger:#ef4444; }
-    * { box-sizing:border-box; }
-    html,body { margin:0; padding:0; background:var(--bg); color:var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial; }
-    a { color:inherit; text-decoration:none; }
-    button { cursor:pointer; border:none; background:none; }
-    .container { max-width:960px; margin:0 auto; padding:16px; }
-    .header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; }
-    .brand { display:flex; align-items:center; gap:10px; }
-    .logo { width:32px; height:32px; border-radius:8px; background:var(--primary); display:grid; place-items:center; color:#fff; font-weight:700; }
-    .title { font-size:18px; font-weight:700; }
-    .support-link { font-size:14px; color:var(--muted); }
-    .hero { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; }
-    .section-title { font-size:16px; font-weight:700; margin:8px 0 12px; }
-    .grid { display:grid; gap:8px; }
-    .grid.cols-3 { grid-template-columns:repeat(3, 1fr); }
-    .grid.cols-2 { grid-template-columns:repeat(2, 1fr); }
-    @media (max-width: 720px) { .grid.cols-3 { grid-template-columns:repeat(2, 1fr); } }
-    @media (max-width: 480px) { .header { flex-direction:column; align-items:flex-start; } .grid.cols-3, .grid.cols-2 { grid-template-columns:1fr; } }
-    .pill { padding:10px 12px; border-radius:10px; background:var(--primary-100); color:var(--text); border:1px solid var(--border); text-align:center; }
-    .pill.active { background:var(--primary); color:#fff; border-color:var(--primary); }
-    .actions { display:flex; gap:8px; margin-top:12px; }
-    .btn { padding:10px 12px; border-radius:10px; font-weight:600; }
-    .btn.primary { background:var(--primary); color:#fff; }
-    .btn.secondary { background:var(--card); color:var(--text); border:1px solid var(--border); }
-    .results { margin-top:16px; }
-    .list-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
-    .muted { color:var(--muted); font-size:14px; }
-    .cards { display:grid; grid-template-columns:1fr; gap:8px; }
-    @media (min-width: 720px) { .cards { grid-template-columns:1fr 1fr; } }
-    .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:12px; display:grid; gap:6px; }
-    .card-top { display:flex; align-items:center; justify-content:space-between; }
-    .name { font-weight:700; }
-    .badge { font-size:12px; padding:6px 8px; border-radius:999px; background:#eef2ff; color:var(--text); border:1px solid var(--border); }
-    .meta { font-size:14px; color:var(--muted); display:flex; gap:12px; flex-wrap:wrap; }
-    .cta { display:flex; gap:8px; }
-    .btn.book { background:var(--accent); color:#fff; }
-    .btn.outline { background:var(--card); border:1px solid var(--border); }
-    .pagination { display:flex; justify-content:center; gap:8px; margin-top:12px; }
-    .footer { margin-top:24px; padding:16px; color:var(--muted); font-size:14px; }
-    .footer-inner { display:grid; gap:6px; }
-    .danger { color:var(--danger); }
+    :root {
+      --bg: #f7f8fa;
+      --card: #ffffff;
+      --text: #222;
+      --muted: #666;
+      --primary: #2e7d32;
+      --primary-hover: #276c2b;
+      --border: #e5e7eb;
+    }
+    html, body {
+      height: 100%;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 16px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    header p {
+      margin: 6px 0 0;
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+    main {
+      flex: 1;
+      max-width: 880px;
+      width: 100%;
+      margin: 20px auto;
+      padding: 0 12px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 16px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 640px) {
+      .grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    label {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    input {
+      width: 100%;
+      margin-top: 6px;
+      padding: 10px 12px;
+      font-size: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      background: #fff;
+    }
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(46,125,50,0.12);
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    button:hover { background: var(--primary-hover); }
+    button.secondary {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .section-title {
+      margin: 18px 0 10px;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    #providers {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width: 720px) {
+      #providers {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .provider {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      background: #fff;
+    }
+    .provider .name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+    .muted {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .empty {
+      padding: 12px;
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      text-align: center;
+      color: var(--muted);
+    }
+    footer {
+      margin-top: auto;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      padding: 16px 12px;
+    }
+    .footer-inner {
+      max-width: 880px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .terms {
+      margin-top: 10px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .terms h3 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+    .terms ul {
+      margin: 6px 0 0;
+      padding-left: 18px;
+    }
+    .terms li {
+      margin: 6px 0;
+    }
   </style>
 </head>
 <body>
-  <header class="container header">
-    <div class="brand">
-      <div class="logo">HS</div>
-      <div>
-        <div class="title">Home Services</div>
-        <div class="muted">Fast, reliable local pros</div>
-      </div>
-    </div>
-    <a href="#support" class="support-link">Customer support</a>
+  <header>
+    <h1>Home Services</h1>
+    <p>Fast, reliable local pros</p>
   </header>
 
-  <main class="container">
-    <!-- Booking Section -->
-    <section class="hero" aria-label="Service booking">
-      <div class="section-title">Select city</div>
-      <div id="cityList" class="grid cols-3" role="listbox" aria-label="Cities"></div>
-
-      <div class="section-title" style="margin-top:12px;">Select service</div>
-      <div id="serviceList" class="grid cols-3" role="listbox" aria-label="Services"></div>
+  <main>
+    <div class="card">
+      <div class="grid grid-2">
+        <div>
+          <label for="cityInput">City</label>
+          <input id="cityInput" type="text" placeholder="e.g. Patna, Lucknow">
+        </div>
+        <div>
+          <label for="serviceInput">Service</label>
+          <input id="serviceInput" type="text" placeholder="e.g. Plumber, Carpenter">
+        </div>
+      </div>
 
       <div class="actions">
-        <button id="bookBtn" class="btn primary" aria-label="Book service">Book service</button>
-        <button id="clearBtn" class="btn secondary" aria-label="Clear selection">Clear</button>
+        <button id="btnBook">Book service</button>
+        <button id="btnClear" class="secondary">Clear</button>
+        <button id="btnRefresh" class="secondary">Refresh</button>
       </div>
 
-      <div class="results" id="results">
-        <div class="list-header">
-          <div class="muted" id="resultInfo">No providers loaded</div>
-          <button id="refreshBtn" class="btn secondary" aria-label="Refresh providers">Refresh</button>
-        </div>
-        <div id="providerCards" class="cards"></div>
-        <div id="pagination" class="pagination"></div>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer" id="support">
-      <div class="footer-inner">
-        <div><strong>Customer support:</strong> support@example.in</div>
-        <div><strong>About:</strong> We connect you with trusted local service providers across multiple cities.</div>
-        <div><strong>Disclaimer:</strong> We verify listings to the best of our ability, but recommend confirming details before booking.</div>
-      </div>
-    </footer>
+      <div class="section-title">Providers list</div>
+      <div id="providers" class="empty">No providers loaded</div>
+    </div>
   </main>
 
-  <!-- Supabase client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    // --- Supabase config (public anon key only) ---
-    const SUPABASE_URL = "https://hjpvadozhrdjugfrcffv.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_VWRFCLxoBE75MYve7W5jhw_PedtT83O";
-    const supabase = supabasejs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // --- UI Config ---
-    const CITIES = ["Patna", "Lucknow", "Kanpur", "Delhi", "Noida", "Gurugram"];
-    const SERVICES = ["Plumber", "Electrician", "Carpenter", "House Cleaning", "Painter", "AC Repair"];
-
-    // --- State ---
-    let selectedCity = null;
-    let selectedService = null;
-    let currentPage = 1;
-    const pageSize = 6;
-
-    // --- Elements ---
-    const cityListEl = document.getElementById("cityList");
-    const serviceListEl = document.getElementById("serviceList");
-    const bookBtn = document.getElementById("bookBtn");
-    const clearBtn = document.getElementById("clearBtn");
-    const refreshBtn = document.getElementById("refreshBtn");
-    const providerCardsEl = document.getElementById("providerCards");
-    const resultInfoEl = document.getElementById("resultInfo");
-    const paginationEl = document.getElementById("pagination");
-
-    // --- UI helpers ---
-    function renderPills(items, container, selected, onSelect) {
-      container.innerHTML = "";
-      items.forEach(item => {
-        const btn = document.createElement("button");
-        btn.className = "pill" + (selected === item ? " active" : "");
-        btn.textContent = item;
-        btn.setAttribute("role", "option");
-        btn.addEventListener("click", () => onSelect(item));
-        container.appendChild(btn);
-      });
-    }
-
-    function setCity(city) {
-      selectedCity = city === selectedCity ? null : city;
-      currentPage = 1;
-      renderPills(CITIES, cityListEl, selectedCity, setCity);
-      loadProviders();
-    }
-
-    function setService(service) {
-      selectedService = service === selectedService ? null : service;
-      currentPage = 1;
-      renderPills(SERVICES, serviceListEl, selectedService, setService);
-      loadProviders();
-    }
-
-    function clearSelection() {
-      selectedCity = null;
-      selectedService = null;
-      currentPage = 1;
-      renderPills(CITIES, cityListEl, selectedCity, setCity);
-      renderPills(SERVICES, serviceListEl, selectedService, setService);
-      loadProviders();
-    }
-
-    function paginate(items, page, size) {
-      const start = (page - 1) * size;
-      return items.slice(start, start + size);
-    }
-
-    function renderPagination(total, page, size) {
-      paginationEl.innerHTML = "";
-      const pages = Math.ceil(total / size);
-      if (pages <= 1) return;
-      const prev = document.createElement("button");
-      prev.className = "btn secondary";
-      prev.textContent = "Prev";
-      prev.disabled = page === 1;
-      prev.addEventListener("click", () => { currentPage = Math.max(1, currentPage - 1); loadProviders(); });
-      paginationEl.appendChild(prev);
-
-      const info = document.createElement("span");
-      info.className = "muted";
-      info.style.padding = "10px 12px";
-      info.textContent = `Page ${page} of ${pages}`;
-      paginationEl.appendChild(info);
-
-      const next = document.createElement("button");
-      next.className = "btn secondary";
-      next.textContent = "Next";
-      next.disabled = page >= pages;
-      next.addEventListener("click", () => { currentPage = Math.min(pages, currentPage + 1); loadProviders(); });
-      paginationEl.appendChild(next);
-    }
-
-    function providerCard(provider) {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `
-        <div class="card-top">
-          <div class="name">${provider.name}</div>
-          <div class="badge">${provider.service}</div>
-        </div>
-        <div class="meta">
-          <span>City: ${provider.city}</span>
-          <span>Phone: ${provider.phone || "—"}</span>
-          <span>Price: ${provider.price_range || "—"}</span>
-          <span>Rating: ${provider.rating ?? "—"}</span>
-          <span>Jobs: ${provider.jobs_done ?? "—"}</span>
-        </div>
-        <div class="cta">
-          <button class="btn book" aria-label="Book now">Book now</button>
-          <button class="btn outline" aria-label="Details">Details</button>
-        </div>
-      `;
-      return div;
-    }
-
-    // --- Supabase query ---
-    async function fetchProviders(city, service, page, size) {
-      let query = supabase
-        .from("providers")
-        .select("*", { count: "exact" });
-
-      if (city) query = query.eq("city", city);
-      if (service) query = query.eq("service", service);
-
-      // Optional order: highest rating first, then name
-      query = query.order("rating", { ascending: false, nullsFirst: true })
-                   .order("name", { ascending: true });
-
-      const start = (page - 1) * size;
-      const end = start + size - 1;
-      query = query.range(start, end);
-
-      const { data, count, error } = await query;
-      if (error) {
-        console.error(error);
-        resultInfoEl.innerHTML = `<span class="danger">Error loading providers: ${error.message}</span>`;
-        return { data: [], count: 0 };
-      }
-      return { data, count: count ?? (data?.length || 0) };
-    }
-
-    async function loadProviders() {
-      const { data, count } = await fetchProviders(selectedCity, selectedService, currentPage, pageSize);
-
-      providerCardsEl.innerHTML = "";
-      data.forEach(p => providerCardsEl.appendChild(providerCard(p)));
-
-      const cityText = selectedCity ? selectedCity : "All cities";
-      const serviceText = selectedService ? selectedService : "All services";
-      resultInfoEl.textContent = `${count} provider(s) • ${cityText} • ${serviceText}`;
-      renderPagination(count, currentPage, pageSize);
-    }
-
-    function handleBook() {
-      if (!selectedCity || !selectedService) {
-        resultInfoEl.innerHTML = `<span class="danger">Select both city and service to proceed.</span>`;
-        return;
-      }
-      alert(`Booking flow: ${selectedService} in ${selectedCity}`);
-    }
-
-    // Init
-    renderPills(CITIES, cityListEl, selectedCity, setCity);
-    renderPills(SERVICES, serviceListEl, selectedService, setService);
-    loadProviders();
-
-    // Events
-    bookBtn.addEventListener("click", handleBook);
-    clearBtn.addEventListener("click", clearSelection);
-    refreshBtn.addEventListener("click", loadProviders);
-  </script>
-</body>
-          </html>
-        <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Home Services Providers</title>
-</head>
-<body>
-  <h1>Providers List</h1>
-  <div id="providers"></div>
+  <footer>
+    <div class="footer-inner">
+      <div><strong>Support:</strong> homeservices.site@gmail.com • <strong>Phone:</strong> +91 9939490499</div>
+      <div class="terms">
+        <h3>Terms & conditions</h3>
+        <ul>
+          <li>We connect users with local providers; final pricing and service quality are the provider’s responsibility.</li>
+          <li>We verify listings to a reasonable extent; please confirm details directly before booking.</li>
+          <li>We are not liable for any loss, damage, or disputes arising from services booked via this site.</li>
+          <li>Basic contact details are used only for booking and support. By using the site, you accept these terms.</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
 
   <script type="module" src="app.js"></script>
 </body>
-</html>   
-
-
+          </html>
