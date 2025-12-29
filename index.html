@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Home Services</title>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 body{
@@ -13,153 +13,143 @@ body{
   background:#f2f2f2;
 }
 
-.wrapper{
-  max-width:800px;
+.app{
+  max-width:420px;
   margin:20px auto;
   background:#fff;
-  padding:20px;
-  border-radius:8px;
+  border-radius:10px;
+  overflow:hidden;
 }
 
-/* TOP */
-h1{margin-bottom:5px;}
-.services{color:#666;margin-bottom:20px;}
+.content{
+  padding:16px;
+}
 
-/* BOOKING */
-.booking{
+h2{margin-top:0}
+
+/* LIST BUTTONS */
+.list{
   display:flex;
-  gap:10px;
   flex-wrap:wrap;
-  margin-bottom:20px;
+  gap:8px;
+  margin-bottom:15px;
 }
 
-select,button{
-  padding:10px;
-  font-size:15px;
-  border-radius:5px;
+.list button{
+  padding:10px 14px;
+  border-radius:20px;
   border:1px solid #ccc;
+  background:#fafafa;
+  font-size:14px;
 }
 
-button{
+.list button.active{
   background:#007bff;
   color:#fff;
   border:none;
-  cursor:pointer;
 }
 
-/* PROVIDERS */
+/* PROVIDER */
 .provider{
   border:1px solid #ddd;
-  padding:12px;
+  padding:10px;
   border-radius:6px;
   margin-bottom:10px;
-  background:#fafafa;
 }
 
 /* FOOTER */
 footer{
-  margin-top:30px;
   background:#222;
   color:#ccc;
-  padding:20px;
+  padding:14px;
   font-size:14px;
 }
-footer h3{color:#fff;margin-top:15px;}
+footer h3{color:#fff;margin-top:0}
 </style>
 </head>
 
 <body>
 
-<div class="wrapper">
-  <h1>Home Services</h1>
-  <div class="services">
-    Plumber | Electrician | AC Repair | Carpenter | Cleaning
+<div class="app">
+
+  <div class="content">
+    <h2>Home Services</h2>
+    <p>Choose City & Service</p>
+
+    <h4>City</h4>
+    <div class="list" id="cityList"></div>
+
+    <h4>Service</h4>
+    <div class="list" id="serviceList"></div>
+
+    <div id="providers"></div>
   </div>
 
-  <!-- BOOKING -->
-  <div class="booking">
-    <select id="citySelect">
-      <option value="">Select City</option>
-    </select>
+  <footer>
+    <h3>Customer Support</h3>
+    <p>Email: support@homeservices.com</p>
+    <p>Phone: +91 9939496099</p>
+  </footer>
 
-    <select id="serviceSelect">
-      <option value="">Select Service</option>
-    </select>
-
-    <button id="searchBtn">Book Service</button>
-  </div>
-
-  <!-- RESULT -->
-  <div id="providers"></div>
 </div>
 
-<footer>
-  <h3>Customer Support</h3>
-  <p>Email: support@homeservices.com</p>
-  <p>Phone: +91 9939496099</p>
-
-  <h3>About Us</h3>
-  <p>
-    Home Services connects customers with local service providers.
-    We are only a listing platform.
-  </p>
-
-  <h3>Disclaimer</h3>
-  <p>
-    We are not responsible for service quality or pricing.
-  </p>
-</footer>
-
 <script>
-/* SUPABASE */
-const supabaseClient = supabase.createClient(
+const { createClient } = supabase;
+
+const db = createClient(
   "https://hjpvadozhrdjugfrcffv.supabase.co",
   "sb_publishable_VWRFCLxoBE75MYve7W5jhw_PedtT83O"
 );
 
+let selectedCity = "";
+let selectedService = "";
+
 /* LOAD CITIES */
 async function loadCities(){
-  const { data } = await supabaseClient
-    .from("providers")
-    .select("city")
-    .neq("city", null);
-
-  const cities = [...new Set(data.map(x => x.city))];
-  cities.forEach(c=>{
-    citySelect.innerHTML += `<option value="${c}">${c}</option>`;
+  const { data } = await db.from("providers").select("city");
+  [...new Set(data.map(d=>d.city))].forEach(c=>{
+    const btn = document.createElement("button");
+    btn.innerText = c;
+    btn.onclick = ()=>{
+      document.querySelectorAll("#cityList button").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedCity = c;
+      loadProviders();
+    };
+    cityList.appendChild(btn);
   });
 }
 
 /* LOAD SERVICES */
 async function loadServices(){
-  const { data } = await supabaseClient
-    .from("providers")
-    .select("service")
-    .neq("service", null);
-
-  const services = [...new Set(data.map(x => x.service))];
-  services.forEach(s=>{
-    serviceSelect.innerHTML += `<option value="${s}">${s}</option>`;
+  const { data } = await db.from("providers").select("service");
+  [...new Set(data.map(d=>d.service))].forEach(s=>{
+    const btn = document.createElement("button");
+    btn.innerText = s;
+    btn.onclick = ()=>{
+      document.querySelectorAll("#serviceList button").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedService = s;
+      loadProviders();
+    };
+    serviceList.appendChild(btn);
   });
 }
 
-/* SEARCH */
-searchBtn.onclick = async () => {
+/* LOAD PROVIDERS */
+async function loadProviders(){
+  if(!selectedCity || !selectedService) return;
+
   providers.innerHTML = "Loading...";
 
-  const city = citySelect.value;
-  const service = serviceSelect.value;
-
-  const { data } = await supabaseClient
+  const { data } = await db
     .from("providers")
     .select("*")
-    .eq("city", city)
-    .eq("service", service)
-    .limit(20);
+    .eq("city", selectedCity)
+    .eq("service", selectedService);
 
   providers.innerHTML = "";
-
-  if(!data || data.length === 0){
+  if(!data.length){
     providers.innerHTML = "No providers found";
     return;
   }
@@ -168,13 +158,12 @@ searchBtn.onclick = async () => {
     providers.innerHTML += `
       <div class="provider">
         <b>${p.name}</b><br>
-        City: ${p.city}<br>
-        Service: ${p.service}<br>
-        Phone: ${p.phone || "N/A"}
+        ${p.city} • ${p.service}<br>
+        📞 ${p.phone}
       </div>
     `;
   });
-};
+}
 
 /* INIT */
 loadCities();
