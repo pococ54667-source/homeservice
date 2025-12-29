@@ -70,26 +70,33 @@
   <button onclick="logout()">Logout</button>
 </div>
 
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
 <script>
   const SUPABASE_URL = "https://hjpvadozhrdjugfrcffv.supabase.co";
   const SUPABASE_KEY = "sb_publishable_VWRFCLxoBE75MYve7W5jhw_PedtT83O";
 
-  const supabase = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
   async function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-    const { error } = await supabase.auth.signInWithPassword({
+    if (!email || !password) {
+      alert("Email aur password bhar");
+      return;
+    }
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
       email,
       password
     });
 
     if (error) {
-      alert(error.message);
+      alert("Login error: " + error.message);
     } else {
       document.getElementById("loginBox").classList.add("hidden");
       document.getElementById("adminBox").classList.remove("hidden");
@@ -97,10 +104,7 @@
   }
 
   async function logout() {
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
     location.reload();
   }
 </script>
-
-</body>
-                 </html>
